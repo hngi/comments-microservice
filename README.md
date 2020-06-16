@@ -1,4 +1,4 @@
-#HOW TO CONTRIBUTE
+# HOW TO CONTRIBUTE
 
 -fork the repository
 
@@ -8,7 +8,7 @@ After cloning cd into the folder you cloned into and run ## composer install
 
 this will install all the dependencies
 
-##FILES
+## FILES
 
 |-App   # This contains the core files of the app
   |-Console
@@ -36,4 +36,4 @@ this will install all the dependencies
 
 ## HOW TO RUN APP
 
-#php -S localhost:8000 -t public
+# php -S localhost:8000 -t public
