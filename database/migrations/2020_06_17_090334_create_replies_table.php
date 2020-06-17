@@ -15,7 +15,11 @@ class CreateRepliesTable extends Migration
     {
         Schema::create('replies', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('reply');
+            $table->integer('vote')->default(0);
+            $table->dateTime('date_created');
+            $table->foreignId('comment_id')->references('id')->on('comments')
+            ->onDelete('cascade')->constrained();
         });
     }
 
