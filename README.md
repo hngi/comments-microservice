@@ -50,5 +50,8 @@ this will install all the dependencies
 
 
 ## HOW TO RUN APP
-
-# php -S localhost:8000 -t public
+-create a new file called .env and copy the content of .env.example into it
+- update the content of the new .env file with your database details
+-run migration with `sh php artisan migrate
+`
+### php -S localhost:8000 -t public
