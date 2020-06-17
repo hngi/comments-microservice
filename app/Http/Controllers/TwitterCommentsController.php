@@ -35,26 +35,19 @@ class TwitterCommentsController extends Controller
                 return response($content = [
                     'data' => [],
                     'message' => 'Comment saved successfully',
-                    'response' => 'Ok'
                 ],
                 $status = 201);
             }else {
                 return response($content = [
                     'message' => 'Cannot save comment',
-                    'response' => 'error',
-                    ] ,
-                    $status = 400
-                );
+                    'error',
+
+                    ]);
             }
 
         } 
 
-        return response($content = [
-            'message' =>'Error could not save user',
-            'response' => 'error',
-            ] ,
-            $status = 400
-        );
+        return response($content = ['message' =>'Error could not save user']);
 
         
     }
