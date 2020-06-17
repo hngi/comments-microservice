@@ -17,7 +17,7 @@ class TwitterCommentsController extends Controller
 
         //call twitter API
         //get user comments
-        $tweetComment = '';
+        $tweetComment = 'bla bal bla blaal';
         //create user for tweeter user
         $user = new User();
         $user->name = 'Tweeter User' ;
@@ -25,14 +25,29 @@ class TwitterCommentsController extends Controller
         $save = $user->save();
 
         if ($save){
-            exit;
             $tweets = new Comment();
             $tweets->user_id = $user->id;
             $tweets->comment_body = $tweetComment;
+            $tweets->comment_origin = 'Twitter';
+            $saveComment = $tweets->save();
+
+            if ($saveComment) {
+                return response($content = [
+                    'data' => [],
+                    'message' => 'Comment saved successfully',
+                ],
+                $status = 201);
+            }else {
+                return response($content = [
+                    'message' => 'Cannot save comment',
+                    'error',
+
+                    ]);
+            }
 
         } 
 
-        return response($content = 'Error could not save user');
+        return response($content = ['message' =>'Error could not save user']);
 
         
     }
