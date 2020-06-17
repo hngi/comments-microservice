@@ -4,7 +4,11 @@
 
 -clone the repository to your local device
 
-After cloning cd into the folder you cloned into and run ## composer install
+After cloning cd into the folder you cloned into and run 
+## composer install
+
+## create .env and update it
+## run php artisan migrate to set up database
 
 this will install all the dependencies
 
