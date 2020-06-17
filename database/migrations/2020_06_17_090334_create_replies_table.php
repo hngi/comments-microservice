@@ -17,7 +17,7 @@ class CreateRepliesTable extends Migration
             $table->id();
             $table->string('reply');
             $table->integer('vote')->default(0);
-            $table->dateTime('date_created');
+            $table->timestamp('date_created')->nullable();
             $table->foreignId('comment_id')->references('id')->on('comments')
             ->onDelete('cascade')->constrained();
         });
