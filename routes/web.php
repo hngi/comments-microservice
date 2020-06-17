@@ -16,4 +16,4 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->get('/tweetComment', ['uses' => "TwitterCommentsController@tweetComments"]);
+$router->get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
