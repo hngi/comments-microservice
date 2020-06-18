@@ -15,7 +15,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/comments/{id}', 'CommentController@getSingleComment');
-$router->put('/comments/update/{id}', 'CommentController@updateComment');
+$router->put('/comments/{id}', 'CommentController@updateComment');
 
 Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);

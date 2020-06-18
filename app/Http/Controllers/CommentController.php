@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
-    public function getSingleComment($id) {
-        $comment = DB::table('comments')->find($id);
-        return response()->json($comment);
-    }
 
     public function updateComment($id, Request $request)
     {
@@ -22,8 +18,9 @@ class CommentController extends Controller
         ]);
 
         //Extract the User Email which is used for the comment with an id of $id value
-        $single_comment = $this->getSingleComment($id);
-        $db_email = $single_comment->original->author_email;
+        $comment = DB::table('comments')->find($id);
+        $original_comment = response()->json($comment);
+        $db_email = $original_comment->original->author_email;
 
         //Get Email from the request
         $email = $request->input("author_email");
