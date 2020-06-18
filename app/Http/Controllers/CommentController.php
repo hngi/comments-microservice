@@ -14,7 +14,7 @@ class CommentController extends Controller
         //Do simple validation to validate the request
         $this->validate($request, [
             'author_email' => 'required',
-            'content' => 'required',
+            'content' => 'required'
         ]);
 
         //Extract the User Email which is used for the comment with an id of $id value
