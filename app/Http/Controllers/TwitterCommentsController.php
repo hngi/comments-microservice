@@ -15,7 +15,7 @@ class TwitterCommentsController extends Controller
     public function tweetComments()
     {
 
-        //call twitter API
+        //call twitter API 
         //get user comments
         $tweetComment = 'bla bal bla blaal';
         //create user for tweeter user

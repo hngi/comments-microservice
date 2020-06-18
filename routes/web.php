@@ -10,11 +10,10 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
-use Illuminate\Support\Facades\Route;
-
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->put('/comments/{id}', 'CommentController@updateComment');
 
 Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
