@@ -34,7 +34,7 @@ class TwitterCommentsController extends Controller
             if ($saveComment) {
                 return response($content = [
                     'data' => [],
-                    'message' => 'Comment saved successfully',
+                    'message' => 'Comment created successfully',
                     'response' => 'Ok'
                 ],
                 $status = 201);
