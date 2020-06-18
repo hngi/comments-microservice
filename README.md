@@ -19,20 +19,35 @@ this will install all the dependencies
 ## FILES
 
 |-App   # This contains the core files of the app
+
   |-Console
+  
   |-Events
+  
   |-Exceptions
+  
   |-Http **This is where will be working on, for this app
+  
   |-Jobs
+  
   |-Listeners
+  
   |-Providers
+  
   |- Models **Not a folder but files   
+  
 |-Bootsrap
+
 |-database  ** where we will be making our databas schemas
+
 |-public
+
 |-resources
+
 |-routes  **Where we will be writing our routes
+
 |-storage
+
 |-tests  **Contain Tests
 
 ## composer.json contains the dependencies for the app please don't touch this!!!
