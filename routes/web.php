@@ -11,10 +11,11 @@
 |
 */
 
-use Illuminate\Support\Facades\Route;
-
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('/comments/{id}', 'CommentController@getSingleComment');
+$router->put('/comments/update/{id}', 'CommentController@updateComment');
 
 Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
