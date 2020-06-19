@@ -17,4 +17,4 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
+Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
