@@ -1,6 +1,6 @@
 Click [here](contribution.md) for directives on how to contribute
 
-# comments microservice
+# Comments microservice
 
 ## Introduction
 What does your API do? This is a comment microservice that allows user to create comments, edit comments and also flags comment. Users can also reply comments , flags reply and also upvote and downvote comments and replies. 
@@ -150,6 +150,11 @@ fetch("report/comment/{report_id}", requestOptions)
 
 This route deletes a particular user comment
 
+## BODY
+```
+"email": "string"
+```
+
 > Example Request
 - Default
 ```js
@@ -184,7 +189,7 @@ fetch("report/comment/{comment_id}", requestOptions)
 
 This route modifies the comments vote. User should send vote types between *upvote and *downvote. The body of the call must include the comment id
 
-## BODY  Raw
+## BODY
 ```
 "vote_type": enum['upvote', 'downvote']
 ```
@@ -222,7 +227,9 @@ fetch("reports/comment/vote/{comment_id}", requestOptions)
 
 This route flags comment
 
-> BODY raw
+> BODY 
+
+"is_flagged": true
 
 ```
 "is_flagged": true
@@ -260,8 +267,9 @@ fetch("reports/comment/flag/{comment_id}", requestOptions)
 
 This routes edits comment
 
-> BODY raw
+> BODY 
 ```
+
 "comment_body": "string"
 ```
 
@@ -291,7 +299,7 @@ Body Headers (0)
 
 Votes reply
 
-> BODY raw
+> BODY 
 ```
 vote_type: enum['upvote', 'downvote']
 ```
@@ -327,8 +335,8 @@ fetch("reports/comment/reply/vote/{reply_id}\n", requestOptions)
 
 This route allows user to edit reply
 
-> BODY raw
-```
+
+> BODY 
 "reply_body": string
 
 ```
@@ -363,7 +371,7 @@ fetch("reports/comment/edit/reply/{report_id}", requestOptions)
 
 Flags reply
 
-> BODY raw
+> BODY 
 ```
 "is_flagged": true
 
