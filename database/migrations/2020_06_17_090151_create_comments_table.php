@@ -21,6 +21,7 @@ class CreateCommentsTable extends Migration
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->integer('vote')->default(0);
+            $table->boolean('isFlagged')->default(false);
             $table->foreignId('user_id')->references('id')->on('users')
             ->onDelete('cascade')->constrained();
         });
