@@ -174,7 +174,7 @@ fetch("report/comment/{comment_id}", requestOptions)
 ```json
 {
     "data" : {
-        "comment" : {"id" : "int"}
+        "comment" : "id"
         },
     "message" : "Comment deleted successfully",
     "response" : "Ok"
