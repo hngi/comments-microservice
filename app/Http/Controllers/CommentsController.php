@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class CommentsController extends Controller
 {
-    public function deleteComment(Request $request)
-    {
-    }
     /**
      * Edit comment
      * @param array $request email, comment
@@ -33,39 +30,39 @@ class CommentsController extends Controller
         //get the user id from database
         $user = DB::table('users')->select('id')->where('email', $email)->get()->first();
         //check if user exist
-        if(!$user) {
+        if (!$user) {
             $msg = [
                 'message' => 'User not found',
-                'response' => 'error' 
+                'response' => 'error'
             ];
             return response()->json($msg, 404);
         }
 
         //get the comment body from database
-        $comment = DB::table('comments')->select('comment_body','user_id')->where('id', $id)->get()->first();
+        $comment = DB::table('comments')->select('comment_body', 'user_id')->where('id', $id)->get()->first();
         //check if comment exist
-        if(!$comment) {
+        if (!$comment) {
             $msg = [
                 'message' => 'Comment Not Found',
-                'response' => 'error' 
+                'response' => 'error'
             ];
-            return response()->json($msg, 404); 
+            return response()->json($msg, 404);
         }
 
         //check if user is authorized or not
-        if($user->id != $comment->user_id) {
+        if ($user->id != $comment->user_id) {
             $msg = [
                 'message' => 'Unauthorized User',
-                'response' => 'error' 
+                'response' => 'error'
             ];
-            return response()->json($msg, 401); 
+            return response()->json($msg, 401);
         }
 
         //update the comment
         $update = DB::table('comments')->where('id', $id)->update(['comment_body' => $comment_body]);
         $msg = [
             'message' => 'Comment Updated',
-            'response' => 'success' 
+            'response' => 'success'
         ];
         return response()->json($msg, 200);
     }
@@ -76,11 +73,20 @@ class CommentsController extends Controller
      * @param int $id comment id
      * @return json result of opperation
      */
-    public function delete(Request $request, $id)
+    public function delete(Request $request, $comment_id)
     {
         //ensure email is passed
         $this->validate($request, [
             'email' => 'required|email'
+        ], [
+            'required' => [
+                'message' => 'email is required',
+                'response' => 'error',
+            ],
+            'required' => [
+                'message' => 'email must be valid',
+                'response' => 'error',
+            ]
         ]);
 
         // get user id
@@ -90,7 +96,7 @@ class CommentsController extends Controller
         if ($User) {
 
             // search for comment
-            $comment = Comment::find($id);
+            $comment = Comment::find($comment_id);
 
             // check if comment is found
             if (!$comment) {
@@ -111,7 +117,7 @@ class CommentsController extends Controller
             // delete comment
             $comment->delete();
             return response()->json([
-                'data' => ['comment' => ['id', $id]],
+                'data' => ['comment' => $comment_id],
                 'message' => 'Comment deleted successfully',
                 'response' => 'Ok'
             ], 200);
@@ -121,6 +127,77 @@ class CommentsController extends Controller
             'message' => 'Invalid User',
             'response' => 'error',
         ], 400);
+    }
+
+    /**
+     * vote a comment
+     * @param array $request,
+     * @param int $comment_id comment id
+     * @return json result of opperation
+     */
+    public function vote(Request $request, $comment_id)
+    {
+        $this->validate($request, [
+            'vote_type' => 'required|string'
+        ], [
+            'required' => [
+                'message' => 'vote_type is required',
+                'response' => 'error',
+            ],
+            'string' => [
+                'message' => 'vote_type must be either upvote or downvote',
+                'response' => 'error',
+            ]
+        ]);
+
+        if (!$request->has('vote_type')) {
+            return response()->json([
+                'message' => 'vote_type is required',
+                'response' => 'error',
+            ], 400);
+        }
+
+        if (!is_numeric($comment_id)) {
+            return response()->json([
+                'message' => 'Comment not found',
+                'response' => 'error',
+            ], 400);
+        }
+
+        $comment = Comment::find($comment_id);
+
+        // check if comment is found
+        if (!$comment) {
+            return response()->json([
+                'message' => 'Comment Not Found',
+                'response' => 'error',
+            ], 400);
+        }
+
+        $voteType = $request->input('vote_type');
+
+        if ($voteType === 'upvote') {
+            $comment->upvote += 1;
+            $comment->vote   += 1;
+            $save = $comment->save();
+        } elseif ($voteType === 'downvote') {
+            $comment->downvote  += 1;
+            $comment->vote      += 1;
+            $save = $comment->save();
+        } else {
+            return response()->json([
+                'message' => 'invalid vote_type',
+                'response' => 'error',
+            ], 400);
+        }
+
+        if ($save) {
+            return response()->json([
+                'data' => [$comment],
+                'message' => 'Comment voted successfully',
+                'response' => 'Ok'
+            ], 200);
+        }
     }
 
     public function generateDummyData()
@@ -137,19 +214,19 @@ class CommentsController extends Controller
         $user2->save();
 
         $comment1 = new Comment();
-        $comment1->report_id = rand(1,200);
+        $comment1->report_id = rand(1, 200);
         $comment1->user_id = $user1->id;
         $comment1->comment_body = 'The money is small';
         $comment1->comment_origin = 'Twitter';
         $comment1->save();
 
         $comment2 = new Comment();
-        $comment2->report_id = rand(1,200);
+        $comment2->report_id = rand(1, 200);
         $comment2->user_id = $user2->id;
         $comment2->comment_body = 'This is a welcome development ...';
         $comment2->comment_origin = 'Twitter';
         $comment2->save();
 
-        return response()->json(['job completed'],200);
+        return response()->json(['job completed'], 200);
     }
 }

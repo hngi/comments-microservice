@@ -25,6 +25,8 @@ Route::patch('reports/comment/edit/{id}', 'CommentsController@update');
 // delete comment
 Route::delete('report/comment/{id}', 'CommentsController@delete');
 
+// upvote/downvotes
+Route::patch('/reports/comment/vote/{comment_id}', ['uses' => 'CommentsController@vote']);
+
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
-
