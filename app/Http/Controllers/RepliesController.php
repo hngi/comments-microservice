@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Comment;
+
+use App\Reply;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RepliesController extends Controller
 {
-    public function vote(Request $request, $comment_body, $reply_id)
+    public function vote(Request $request, $reply_id)
     {
         //validate the request
         $this->validate($request, [
             'email' => 'required|email',
-            'comment_body' => 'required'
-            'reply_body' => 'required'
-        ]);
+            'vote_type' => 'required',
+        ]); //only vote type and email is required
 
-        //get email, comment_body and reply_body from request
+        //get email, and vote_type from request
         $email = $request['email'];
-        $comment_body = $request['comment_body'];
-        $reply_body = $request['reply_body'];
+        $voteType = $request['vote_type'];
 
         //get the user id from database
         $user = DB::table('users')->select('id')->where('email', $email)->get()->first();
@@ -34,19 +33,9 @@ class RepliesController extends Controller
             return response()->json($msg, 404);
         }
 
-        //get the comment body from database
-        $comment = DB::table('comments')->select('comment_body', 'user_id')->where('id', $id)->get()->first();
-        //check if comment exist
-        if (!$comment) {
-            $msg = [
-                'message' => 'Comment Not Found',
-                'response' => 'error'
-            ];
-            return response()->json($msg, 404);
-        }
 
         //get the reply connected to a particular comment from database
-        $reply = DB::table('reply')->select('reply_body', 'user_id')->where('id', $id)->get()->first();
+        $reply = DB::table('reply')->select('reply_body', 'user_id')->where('id', $reply_id)->get()->first();
         //check if reply exist
         if (!$reply) {
             $msg = [
@@ -83,7 +72,7 @@ class RepliesController extends Controller
                 'response' => 'error',
             ], 400);
         }
-
+        
         $reply = Reply::find($reply_id);
 
         // check if comment is found
