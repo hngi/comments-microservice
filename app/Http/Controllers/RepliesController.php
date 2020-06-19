@@ -14,25 +14,12 @@ class RepliesController extends Controller
     {
         //validate the request
         $this->validate($request, [
-            'email' => 'required|email',
             'vote_type' => 'required',
         ]); //only vote type and email is required
 
-        //get email, and vote_type from request
-        $email = $request['email'];
+        //get vote_type from request
+        //anybody can upvote or downvote
         $voteType = $request['vote_type'];
-
-        //get the user id from database
-        $user = DB::table('users')->select('id')->where('email', $email)->get()->first();
-        //check if user exist
-        if (!$user) {
-            $msg = [
-                'message' => 'User not found',
-                'response' => 'error'
-            ];
-            return response()->json($msg, 404);
-        }
-
 
         //get the reply connected to a particular comment from database
         $reply = DB::table('reply')->select('reply_body', 'user_id')->where('id', $reply_id)->get()->first();
