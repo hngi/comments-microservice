@@ -23,7 +23,7 @@ Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComment
 Route::patch('reports/comment/edit/{id}', 'CommentsController@update');
 
 // delete comment
-Route::delete('report/comment/{id}', 'CommentsController@delete');
+Route::delete('report/comment/{comment_id}', 'CommentsController@delete');
 
 // upvote/downvotes
 Route::patch('/reports/comment/vote/{comment_id}', ['uses' => 'CommentsController@vote']);
