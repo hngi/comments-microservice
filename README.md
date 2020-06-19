@@ -33,11 +33,11 @@ BODY
 
 Example Request
 Default
-var raw = "{\"report_id\":\"integer\",\"comment_body\": \"string\", \"comment_origin\": \"string\", \"comment_owner_username\": \"string\", \"comment_owner_email\": \"string\"}";
+var bodyJson = {"report_id": 63,"comment_body": "This is the comment body", "comment_origin": "Twitter", "comment_owner_username": "name of comment twitter user", "comment_owner_email": "twitteruser@gmail.com"}";
 
 var requestOptions = {
   method: 'POST',
-  body: raw,
+  body: bodyJson,
   redirect: 'follow'
 };
 
@@ -53,33 +53,6 @@ Body Headers (0)
                     "response" => "Created"]
 
 
-## GET reports/comments
-reports/comments
-
-This route returns all the comments in the database without the flagged comments.
-
-
-
-Example Request
-Default
-var raw = "";
-
-var requestOptions = {
-  method: 'GET',
-  body: raw,
-  redirect: 'follow'
-};
-
-fetch("reports/comments", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-Example Response
-200
-Body Headers (0)
-'data' => [ "report_id": "integer',comment_origin: string, comment_body: string, comment_owner: string, votes: integer, replies_count: integer, upvotes: integer, downvotes: integer ],
-                    'message' => 'Comment returned successfully',
-                    'response'=> 'Ok'
 
 GET report/comment/{report_id}
 ## report/comment/{report_id}

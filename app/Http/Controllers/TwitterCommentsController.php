@@ -11,7 +11,7 @@ class TwitterCommentsController extends Controller
     /**
      *  controller that handles tweets comment.
      *  @param Request
-     * @return void
+     * @return json
      */
     public function tweetComments(Request $request)
     {
