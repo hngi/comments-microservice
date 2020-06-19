@@ -28,7 +28,7 @@ This route creates comments received on twitter report. The body will carry the 
 > BODY 
 
 ```json
-## {"report_id":"integer","comment_body": "string", "comment_origin": "string", "comment_owner_username": "string", "comment_owner_email": "string"}
+{"report_id":"integer","comment_body": "string", "comment_origin": "string", "comment_owner_username": "string", "comment_owner_email": "string"}
 ```
 
 > Example Request
@@ -56,8 +56,8 @@ fetch("tweet/comment", requestOptions)
 **Body Headers (0)**
 ```json
 {"data" :  [],
-"message" =>  "Comment saved successfully",
-"response" => "Created"}
+"message" :  "Comment saved successfully",
+"response" : "Created"}
 ```
 
 ## GET: reports/comments
@@ -90,15 +90,15 @@ fetch("reports/comments", requestOptions)
 **Body Headers (0)**
 ```json
 {"data" : [{
-    "report_id": integer,
-    "comment_origin": string,
-    "comment_body": string, 
-    "comment_owner": string, 
-    "votes": integer, 
-    "replies_count": integer, 
-    "upvotes": integer, 
-    "downvotes": integer 
-    },]                    
+    "report_id": "integer",
+    "comment_origin": "string",
+    "comment_body": "string", 
+    "comment_owner": "string", 
+    "votes": "integer", 
+    "replies_count": "integer", 
+    "upvotes": "integer", 
+    "downvotes": "integer" 
+    },],
 "message" : "Comment returned successfully",
 "response" : "Ok"
 }
@@ -173,9 +173,9 @@ fetch("report/comment/{comment_id}", requestOptions)
 ** Body Headers (0)**
 ```json
 [
- "data" : ["comment" : {"id", int},
+ "data" : {"comment" : {"id" : "int"}},
                 "message" : "Comment deleted successfully",
-                "response" => "Ok"
+                "response" : "Ok"
             ]
 ```
 ## PATCH : reports/comment/vote/{comment_id}
@@ -211,8 +211,8 @@ fetch("reports/comment/vote/{comment_id}", requestOptions)
     "comment_votes": "integer",
     "upvotes": "integer",
     "downvotes": "integer",
-    "'message" => "Comment voted successfully",
-    "response" => "Accepted"
+    "'message" : "Comment voted successfully",
+    "response" : "Accepted"
     },]
     }
 ```
@@ -316,10 +316,10 @@ fetch("reports/comment/reply/vote/{reply_id}\n", requestOptions)
 ```
 **Body Headers (0)**
 ```json
-'data' => [
-    'message' => 'Report flasuccessfully',
-    'response' => 'Ok'
-    ],
+"data" : {
+    "message" : "Report flag successfully",
+    "response" : "Ok"
+    },
 ```
 ## PATCH: reports/comment/edit/reply/{report_id}
 
@@ -419,13 +419,13 @@ fetch("report/comment/{comment_id}/reply/{reply_id}", requestOptions)
 **Body Headers (0)**
 ```json
 {"data" : [{ 
-    "report_id": integer,
-    "comment_id": integer,
-    "reply_body": string,
-    "votes": integer,
-    "reply_id": integer,
-    "upvotes": integer,
-    "downvotes": integer 
+    "report_id": "integer",
+    "comment_id": "integer",
+    "reply_body": "string",
+    "votes": "integer",
+    "reply_id": "integer",
+    "upvotes": "integer",
+    "downvotes": "integer" 
     },],
 "message"  : "Comment returned successfully",
 "response" : "Ok"
