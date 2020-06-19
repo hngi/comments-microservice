@@ -79,12 +79,14 @@ class CommentsController extends Controller
         $user2->save();
 
         $comment1 = new Comment();
+        $comment1->report_id = rand(1,200);
         $comment1->user_id = $user1->id;
         $comment1->comment_body = 'The money is small';
         $comment1->comment_origin = 'Twitter';
         $comment1->save();
 
         $comment2 = new Comment();
+        $comment2->report_id = rand(1,200);
         $comment2->user_id = $user2->id;
         $comment2->comment_body = 'This is a welcome development ...';
         $comment2->comment_origin = 'Twitter';
