@@ -18,4 +18,4 @@ $router->get('/', function () use ($router) {
 });
 
 Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
-Route::get('comments', 'Controller@getAllComments');
+Route::get('comments', 'GetCommentsController@getAllComments');
