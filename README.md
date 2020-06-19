@@ -4,7 +4,7 @@ Click <a href='contribution.md'> here </a> for directives on how to contribute
 
 comments microservice
 
-<Introduction
+## Introduction
 What does your API do? This is a comment microservice that allows user to create comments, edit comments and also flags comment. Users can also reply comments , flags reply and also upvote and downvote comments and replies. 
 
 ## Overview 
@@ -142,7 +142,7 @@ PATCH reports/comment/vote/{comment_id}
 ## reports/comment/vote/{comment_id}
 This route modifies the comments vote. User should send vote types between *upvote and *downvote. The body of the call must include the comment id
 
-BODY raw
+BODY 
 "vote_type": enum['upvote', 'downvote']
 
 
@@ -171,7 +171,7 @@ PATCH reports/comment/flag/{comment_id}
 ## reports/comment/flag/{comment_id}
 This route flags comment
 
-BODY raw
+BODY 
 "is_flagged": true
 
 
@@ -201,7 +201,7 @@ PATCH reports/comment/edit/{comment_id}
 ## reports/comment/edit/{comment_id}
 This routes edits comment
 
-BODY raw
+BODY 
 "comment_body": "string"
 
 
@@ -230,7 +230,7 @@ PATCH reports/comment/reply/vote/{reply_id}
 ## reports/comment/reply/vote/{reply_id}
 Votes reply
 
-BODY raw
+BODY 
 vote_type: enum['upvote', 'downvote']
 
 
@@ -259,7 +259,7 @@ PATCH reports/comment/edit/reply/{report_id}
 ## reports/comment/edit/reply/{report_id}
 This route allows user to edit reply
 
-BODY raw
+BODY 
 "reply_body": string
 
 
@@ -289,7 +289,7 @@ PATCH reports/comment/reply/flag/{reply_id}
 ## reports/comment/reply/flag/{reply_id}
 Flags reply
 
-BODY raw
+BODY 
 "is_flagged": true
 
 
