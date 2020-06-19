@@ -17,10 +17,11 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
+Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
 
 // delete comment
 Route::delete('/comments/{id}', 'CommentsController@delete');
 
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
+
