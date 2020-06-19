@@ -20,7 +20,7 @@ $router->get('/', function () use ($router) {
 Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
 
 // delete comment
-Route::delete('/comments/{id}', 'CommentsController@delete');
+Route::delete('report/comment/{id}', 'CommentsController@delete');
 
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
