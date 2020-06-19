@@ -20,7 +20,7 @@ $router->get('/', function () use ($router) {
 Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
 
 //edit comment
-Route::put('report/comment/{id}', 'CommentsController@update');
+Route::patch('report/comment/edit/{id}', 'CommentsController@update');
 
 // delete comment
 Route::delete('report/comment/{id}', 'CommentsController@delete');
