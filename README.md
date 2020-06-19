@@ -172,11 +172,13 @@ fetch("report/comment/{comment_id}", requestOptions)
 ```
 ** Body Headers (0)**
 ```json
-[
- "data" : {"comment" : {"id" : "int"}},
-                "message" : "Comment deleted successfully",
-                "response" : "Ok"
-            ]
+{
+    "data" : {
+        "comment" : {"id" : "int"}
+        },
+    "message" : "Comment deleted successfully",
+    "response" : "Ok"
+}
 ```
 ## PATCH : reports/comment/vote/{comment_id}
 
