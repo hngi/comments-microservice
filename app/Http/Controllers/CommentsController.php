@@ -12,11 +12,12 @@ class CommentsController extends Controller
 
     public function getSingleCommentsOnReport($report_id) {
         //get all comment here 
-        $comments = Comment::where('report_id',$report_id)->get()->toJson(JSON_PRETTY_PRINT);
-        if (!$comments){
+        $comments = Comment::where('report_id', $report_id)->get()->toJson(JSON_PRETTY_PRINT);
+        
+        if ($comments !== []){
             return response([
                 "data" => [], 
-                "message" => "Report Not found",
+                "message" => "No Comment for Report found",
                 "response" => "error"], 404);
         }
         //else return success
