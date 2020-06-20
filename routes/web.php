@@ -37,3 +37,7 @@ Route::patch('reports/comment/reply/vote/{reply_id}', ['uses' => 'RepliesControl
 
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
+
+//Get a single comment on a report
+Route::get('report/comment/{report_id}', 'CommentsController@getSingleCommentsOnReport');
+

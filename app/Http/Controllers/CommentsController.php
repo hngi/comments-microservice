@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\DB;
 
 class CommentsController extends Controller
 {
+
+    public function getSingleCommentsOnReport($report_id) {
+        //get all comment here 
+        $comments = Comment::find($report_id)->Comment()->get()->toJson(JSON_PRETTY_PRINT);
+        return response([
+            "data" => $comments, 
+            "message" => "Comment returned successfully",
+            "response" => "Ok"], 200);
+    }
+    
+    public function deleteComment(Request $request)
+
     /**
      * Edit comment
      * @param array $request email, comment
@@ -16,6 +28,7 @@ class CommentsController extends Controller
      * @return json result of opperation
      */
     public function update(Request $request, $id)
+
     {
         //validate the request
         $this->validate($request, [
