@@ -107,7 +107,7 @@ fetch("report/comment/create", requestOptions)
 ```
 
 
-## GET: report/comment/{report_id}
+## GET: report/comments/{report_id}
 
 This route returns all the comments in under a report in the database without the flagged comments.
 
@@ -123,7 +123,7 @@ var requestOptions = {
   redirect: 'follow'
 };
 
-fetch("report/comment/{report_id}", requestOptions)
+fetch("report/comments/{report_id}", requestOptions)
   .then(response => response.text())
   .then(result => console.log(result))
   .catch(error => console.log('error', error));

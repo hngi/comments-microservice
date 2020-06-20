@@ -19,7 +19,6 @@ class CommentsController extends Controller
             "response" => "Ok"], 200);
     }
     
-    public function deleteComment(Request $request)
 
     /**
      * Edit comment
