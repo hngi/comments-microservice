@@ -18,6 +18,8 @@ class CreateRepliesTable extends Migration
             $table->string('reply');
             $table->integer('vote')->default(0);
             $table->timestamp('date_created')->nullable();
+            $table->integer('upvote')->default(0);
+            $table->integer('downvote')->default(0);
             $table->boolean('isFlagged')->default(false);
             $table->foreignId('comment_id')->references('id')->on('comments')
             ->onDelete('cascade')->constrained();
