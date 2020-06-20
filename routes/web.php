@@ -25,6 +25,6 @@ Route::delete('report/comment/{id}', 'CommentsController@delete');
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
 
-//get all comments
-Route::get('/comments', 'CommentsController@getAllComments');
+//Get a single comment on a report
+Route::get('report/comment/{report_id}', 'CommentsController@getSingleCommentsOnReport');
 

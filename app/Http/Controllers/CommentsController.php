@@ -8,11 +8,14 @@ use Illuminate\Http\Request;
 
 class CommentsController extends Controller
 {
-    
-    public function getAllComments() {
+
+    public function getSingleCommentsOnReport($report_id) {
         //get all comment here 
-        $comments = Comment::get()->toJson(JSON_PRETTY_PRINT);
-        return response($comments, 200);
+        $comments = Comment::find($report_id)->Comment()->get()->toJson(JSON_PRETTY_PRINT);
+        return response([
+            "data" => $comments, 
+            "message" => "Comment returned successfully",
+            "response" => "Ok"], 200);
     }
     
     public function deleteComment(Request $request)
