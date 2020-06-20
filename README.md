@@ -21,7 +21,7 @@ What is the preferred way of using the API? This API can be accessed with any pr
 [https://fgn-comments-service.herokuapp.com/](https://fgn-comments-service.herokuapp.com/)
 
 
-## POST : `tweet/comment`
+## POST : `tweet/comment/create`
 
 This route creates comments received on twitter report. The body will carry the owner username and email also the report id
 
@@ -46,7 +46,50 @@ var requestOptions = {
   redirect: 'follow'
 };
 
-fetch("tweet/comment", requestOptions)
+fetch("tweet/comment/create", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+```
+> Example Response
+
+```
+201
+```
+**Body Headers (0)**
+```json
+{"data" :  [],
+"message" :  "Comment saved successfully",
+"response" : "Created"}
+```
+
+## POST : `report/comment/create`
+
+This route creates comments received on report. The body will carry the owner username and email also the report id if the user is not anonymous. If it is anonymous use anonymous as name and anonymous@email.com as email
+
+> BODY 
+
+```json
+{"report_id":"integer","comment_body": "string", "comment_origin": "string", "comment_owner_username": "string", "comment_owner_email": "string"}
+```
+
+Example Request
+Default
+
+> Example Request
+` Default
+```js
+var bodyJson = {
+  "report_id": 63,"comment_body": "This is the comment body", "comment_origin": "comment origin", "comment_owner_username": "name of comment owner use anonymous if user is anonymous", "comment_owner_email": "commentownner@gmail.com"};
+
+
+var requestOptions = {
+  method: 'POST',
+  body: bodyJson,
+  redirect: 'follow'
+};
+
+fetch("report/comment/create", requestOptions)
   .then(response => response.text())
   .then(result => console.log(result))
   .catch(error => console.log('error', error));

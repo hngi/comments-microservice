@@ -18,7 +18,10 @@ $router->get('/', function () use ($router) {
 });
 
 //create twitter comment
-Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
+Route::post('/tweet/comment/create', ['uses' => "TwitterCommentsController@tweetComments"]);
+
+//create comment
+Route::post('/report/comment/create', ['uses' => "CommentsController@createComment"]);
 
 //edit comment
 Route::patch('reports/comment/edit/{id}', 'CommentsController@update');

@@ -229,4 +229,93 @@ class CommentsController extends Controller
 
         return response()->json(['job completed'], 200);
     }
+
+    /**
+     * Create comment in database
+     * @param array $request,
+     * @return json result of opperation
+     */
+    public function createComment(Request $request){
+        //validate request
+        validator([
+            'email' => 'required|email|unique',
+            
+        ]);
+
+        $request = json_decode($request->getContent());
+        
+        $check_user = User::where('email', $request->comment_owner_email)->get(); //check if user already exist
+
+        if (count($check_user) > 0){
+            //create comments
+
+            $user_id = $check_user[0]->id;
+
+            $comment = new Comment();
+            $comment->user_id = $user_id;
+            $comment->comment_body = $request->comment_body;
+            $comment->comment_origin = $request->comment_origin;
+            $comment->report_id = $request->report_id;
+            $saveComment = $comment->save();
+
+            if ($saveComment) {
+                return response($content = [
+                    'data' => [],
+                    'message' => 'Comment created successfully',
+                    'response' => 'Ok'
+                ],
+                $status = 201);
+            }else {
+                return response($content = [
+                    'message' => 'Cannot save comment',
+                    'response' => 'error',
+                    ] ,
+                    $status = 400
+                );
+            }
+
+            
+        }else {
+            //create new user before creating comment
+            $user = new User();
+            $user->name = $request->comment_owner_username;
+            $user->email = $request->comment_owner_email;
+            $save = $user->firstOrCreate(['email' => $user->email, 'name' => $user->name]);
+
+
+            if ($save){
+                $comment = new Comment();
+                $comment->user_id = User::all()->last()->id; //get last user id from database
+                $comment->comment_body = $request->comment_body;
+                $comment->comment_origin = $request->comment_origin;
+                $comment->report_id = $request->report_id;
+                $saveComment = $comment->save();
+
+                if ($saveComment) {
+                    return response($content = [
+                        'data' => [],
+                        'message' => 'Comment created successfully',
+                        'response' => 'Ok'
+                    ],
+                    $status = 201);
+                }else {
+                    return response($content = [
+                        'message' => 'Cannot save comment',
+                        'response' => 'error',
+                        ] ,
+                        $status = 400
+                    );
+                }
+
+            } 
+
+            return response($content = [
+                'message' =>'Error could not save user',
+                'response' => 'error',
+                ] ,
+                $status = 400
+            );
+        }
+
+    }
 }
