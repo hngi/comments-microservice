@@ -12,22 +12,14 @@ class CommentsController extends Controller
 
     public function getSingleCommentsOnReport($report_id) {
         //get all comment here 
-        $comments = Comment::where('report_id', $report_id)->get()->toJson(JSON_PRETTY_PRINT);
-        
-        if ($comments !== []){
-            return response([
-                "data" => [], 
-                "message" => "No Comment for Report found",
-                "response" => "error"], 404);
-        }
-        //else return success
-        return response([
-            "data" => $comments, 
-            "message" => "Comment returned successfully",
-            "response" => "Ok"], 200);
-    }
+        $comments = DB::table('comments')->where(['report_id' => $report_id])->get();
+        $msg = [
+            'data' => $comments,
+            'response' => 'success'
+        ];
+        return response()->json($msg, 200);
     
-
+    }
     /**
      * Edit comment
      * @param array $request email, comment
@@ -52,7 +44,7 @@ class CommentsController extends Controller
         //check if user exist
         if (!$user) {
             $msg = [
-                'message' => 'User not found',
+                'data' => 'User not found',
                 'response' => 'error'
             ];
             return response()->json($msg, 404);
@@ -63,7 +55,7 @@ class CommentsController extends Controller
         //check if comment exist
         if (!$comment) {
             $msg = [
-                'message' => 'Comment Not Found',
+                'data' => 'Comment Not Found',
                 'response' => 'error'
             ];
             return response()->json($msg, 404);
@@ -72,7 +64,7 @@ class CommentsController extends Controller
         //check if user is authorized or not
         if ($user->id != $comment->user_id) {
             $msg = [
-                'message' => 'Unauthorized User',
+                'data' => 'Unauthorized User',
                 'response' => 'error'
             ];
             return response()->json($msg, 401);
@@ -81,7 +73,7 @@ class CommentsController extends Controller
         //update the comment
         $update = DB::table('comments')->where('id', $id)->update(['comment_body' => $comment_body]);
         $msg = [
-            'message' => 'Comment Updated',
+            'data' => 'Comment Updated',
             'response' => 'success'
         ];
         return response()->json($msg, 200);
@@ -100,11 +92,11 @@ class CommentsController extends Controller
             'email' => 'required|email'
         ], [
             'required' => [
-                'message' => 'email is required',
+                'data' => 'email is required',
                 'response' => 'error',
             ],
             'required' => [
-                'message' => 'email must be valid',
+                'data' => 'email must be valid',
                 'response' => 'error',
             ]
         ]);
@@ -121,7 +113,7 @@ class CommentsController extends Controller
             // check if comment is found
             if (!$comment) {
                 return response()->json([
-                    'message' => 'Comment Not Found',
+                    'data' => 'Comment Not Found',
                     'response' => 'error',
                 ], 400);
             }
@@ -129,7 +121,7 @@ class CommentsController extends Controller
             // check if user owns comment
             if ($comment['user_id'] != $User['id']) {
                 return response()->json([
-                    'message' => 'Unathorized User',
+                    'data' => 'Unathorized User',
                     'response' => 'error',
                 ], 401);
             }
@@ -138,13 +130,13 @@ class CommentsController extends Controller
             $comment->delete();
             return response()->json([
                 'data' => ['comment' => $comment_id],
-                'message' => 'Comment deleted successfully',
+                'data' => 'Comment deleted successfully',
                 'response' => 'Ok'
             ], 200);
         }
 
         return response()->json([
-            'message' => 'Invalid User',
+            'data' => 'Invalid User',
             'response' => 'error',
         ], 400);
     }
@@ -161,25 +153,25 @@ class CommentsController extends Controller
             'vote_type' => 'required|string'
         ], [
             'required' => [
-                'message' => 'vote_type is required',
+                'data' => 'vote_type is required',
                 'response' => 'error',
             ],
             'string' => [
-                'message' => 'vote_type must be either upvote or downvote',
+                'data' => 'vote_type must be either upvote or downvote',
                 'response' => 'error',
             ]
         ]);
 
         if (!$request->has('vote_type')) {
             return response()->json([
-                'message' => 'vote_type is required',
+                'data' => 'vote_type is required',
                 'response' => 'error',
             ], 400);
         }
 
         if (!is_numeric($comment_id)) {
             return response()->json([
-                'message' => 'Comment not found',
+                'data' => 'Comment not found',
                 'response' => 'error',
             ], 400);
         }
@@ -189,7 +181,7 @@ class CommentsController extends Controller
         // check if comment is found
         if (!$comment) {
             return response()->json([
-                'message' => 'Comment Not Found',
+                'data' => 'Comment Not Found',
                 'response' => 'error',
             ], 400);
         }
@@ -206,7 +198,7 @@ class CommentsController extends Controller
             $save = $comment->save();
         } else {
             return response()->json([
-                'message' => 'invalid vote_type',
+                'data' => 'invalid vote_type',
                 'response' => 'error',
             ], 400);
         }
@@ -214,7 +206,7 @@ class CommentsController extends Controller
         if ($save) {
             return response()->json([
                 'data' => [$comment],
-                'message' => 'Comment voted successfully',
+                'data' => 'Comment voted successfully',
                 'response' => 'Ok'
             ], 200);
         }
@@ -255,86 +247,72 @@ class CommentsController extends Controller
      * @param array $request,
      * @return json result of opperation
      */
-    public function createComment(Request $request){
+    public function createComment(Request $request, $report_id){
         //validate request
-        validator([
-            'email' => 'required|email|unique',
-            
+        $this->validate($request, [
+            'comment_body' => 'required'
         ]);
-
-        $request = json_decode($request->getContent());
         
-        $check_user = User::where('email', $request->comment_owner_email)->get(); //check if user already exist
-
-        if (count($check_user) > 0){
-            //create comments
-
-            $user_id = $check_user[0]->id;
-
-            $comment = new Comment();
-            $comment->user_id = $user_id;
-            $comment->comment_body = $request->comment_body;
-            $comment->comment_origin = $request->comment_origin;
-            $comment->report_id = $request->report_id;
-            $saveComment = $comment->save();
-
-            if ($saveComment) {
-                return response($content = [
-                    'data' => [],
-                    'message' => 'Comment created successfully',
-                    'response' => 'Ok'
-                ],
-                $status = 201);
+        //Check if the name, email is empty or no
+        if (!empty($request->email) && !empty($request->name)) {
+            //Get the user from the database
+            $user = DB::table('users')->where(['email' => $request->email])->get()->first();
+            //check if user id is set
+            if (isset($user->id)) {
+                $user_id = $user->id;
             }else {
-                return response($content = [
-                    'message' => 'Cannot save comment',
-                    'response' => 'error',
-                    ] ,
-                    $status = 400
-                );
-            }
-
-            
-        }else {
-            //create new user before creating comment
-            $user = new User();
-            $user->name = $request->comment_owner_username;
-            $user->email = $request->comment_owner_email;
-            $save = $user->firstOrCreate(['email' => $user->email, 'name' => $user->name]);
-
-
-            if ($save){
-                $comment = new Comment();
-                $comment->user_id = User::all()->last()->id; //get last user id from database
-                $comment->comment_body = $request->comment_body;
-                $comment->comment_origin = $request->comment_origin;
-                $comment->report_id = $request->report_id;
-                $saveComment = $comment->save();
-
-                if ($saveComment) {
-                    return response($content = [
-                        'data' => [],
-                        'message' => 'Comment created successfully',
-                        'response' => 'Ok'
-                    ],
-                    $status = 201);
-                }else {
-                    return response($content = [
-                        'message' => 'Cannot save comment',
-                        'response' => 'error',
-                        ] ,
-                        $status = 400
-                    );
+                //create a new user if user id not set
+                $new_user = DB::table('users')->insert([
+                    'name' => $request->name,
+                    'email' => $request->email
+                ]);
+                //check if user creation is successful
+                if ($new_user) {
+                    ///get the user id
+                    $user = DB::table('users')->where(['email' => $request->email])->get()->first();
+                    $user_id = $user->id;
                 }
-
-            } 
-
-            return response($content = [
-                'message' =>'Error could not save user',
-                'response' => 'error',
-                ] ,
-                $status = 400
-            );
+            }
+             //create new comment
+             $new_comment = DB::table("comments")->insert([
+                'report_id' => $report_id,
+                'comment_body' => $request->comment_body,
+                'comment_origin' => "Twitter",
+                'user_id' => $user_id
+            ]);
+            //check if new comment is a success
+            if ($new_comment) {
+                $msg = [
+                    'data' => 'Comment created',
+                    'response' => 'success'
+                ];
+                return response()->json($msg, 200);   
+            }
+            $msg = [
+                'data' => 'Unable to create comment',
+                'response' => 'error'
+            ];
+            return response()->json($msg, 400);
+        }else {
+            //comment anonymously
+            $new_comment = DB::table("comments")->insert([
+                'report_id' => $report_id,
+                'comment_body' => $request->comment_body,
+                'comment_origin' => "Twitter",
+                'user_id' => 1
+            ]);
+            if ($new_comment) {
+                $msg = [
+                    'data' => 'Comment created',
+                    'response' => 'success'
+                ];
+                return response()->json($msg, 200);   
+            }
+            $msg = [
+                'data' => 'Unable to create comment',
+                'response' => 'error'
+            ];
+            return response()->json($msg, 400);
         }
 
     }
