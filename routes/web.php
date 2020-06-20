@@ -21,23 +21,23 @@ $router->get('/', function () use ($router) {
 Route::post('/tweet/comment/create', ['uses' => "TwitterCommentsController@tweetComments"]);
 
 //create comment
-Route::post('/report/comment/create', ['uses' => "CommentsController@createComment"]);
+Route::post('/report/{report_id}/comment/create', ['uses' => "CommentsController@createComment"]);
 
 //edit comment
-Route::patch('reports/comment/edit/{id}', 'CommentsController@update');
+Route::patch('report/comment/edit/{id}', 'CommentsController@update');
 
 // delete comment
 Route::delete('report/comment/{comment_id}', 'CommentsController@delete');
 
 // upvote/downvotes
-Route::patch('/reports/comment/vote/{comment_id}', ['uses' => 'CommentsController@vote']);
+Route::patch('/report/comment/vote/{comment_id}', ['uses' => 'CommentsController@vote']);
 
 //upvote/downvote reply
-Route::patch('reports/comment/reply/vote/{reply_id}', ['uses' => 'RepliesController@vote']);
+Route::patch('report/comment/reply/vote/{reply_id}', ['uses' => 'RepliesController@vote']);
 
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
 
 //Get a comments on a report
-Route::get('report/comments/{report_id}', 'CommentsController@getSingleCommentsOnReport');
+Route::get('report/{report_id}/comments', 'CommentsController@getSingleCommentsOnReport');
 
