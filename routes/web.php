@@ -18,3 +18,6 @@ $router->get('/', function () use ($router) {
 });
 
 Route::get('/tweets/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
+
+//add comment
+Route::post('/reports/comment/{report_id}', 'CommentsController@add');
