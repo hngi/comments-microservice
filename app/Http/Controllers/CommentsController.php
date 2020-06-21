@@ -13,7 +13,7 @@ class CommentsController extends Controller
     public function getSingleCommentsOnReport($report_id)
     {
         //get all comment here
-        $comments = Comment::where('report_id', $report_id)->get()->toJson(JSON_PRETTY_PRINT);
+        $comments = Comment::where('report_id', $report_id)->get();
 
         if (!$comments) {
             return response([
