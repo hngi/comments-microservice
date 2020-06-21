@@ -40,4 +40,5 @@ Route::get('/dummy-data','CommentsController@generateDummyData');
 
 //Get a comments on a report
 Route::get('report/{report_id}/comments', 'CommentsController@getSingleCommentsOnReport');
+Route::get('report/comments', 'CommentsController@getAllComments');
 
