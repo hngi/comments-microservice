@@ -10,23 +10,24 @@ use Illuminate\Support\Facades\DB;
 class CommentsController extends Controller
 {
 
-    public function getSingleCommentsOnReport($report_id) {
-        //get all comment here 
+    public function getSingleCommentsOnReport($report_id)
+    {
+        //get all comment here
         $comments = Comment::where('report_id', $report_id)->get()->toJson(JSON_PRETTY_PRINT);
-        
-        if ($comments !== []){
+
+        if (!$comments) {
             return response([
-                "data" => [], 
                 "message" => "No Comment for Report found",
-                "response" => "error"], 404);
+                "response" => "error"
+            ], 404);
         }
         //else return success
         return response([
-            "data" => $comments, 
+            "data" => $comments,
             "message" => "Comment returned successfully",
-            "response" => "Ok"], 200);
+            "response" => "Ok"
+        ], 200);
     }
-    
 
     /**
      * Edit comment
@@ -35,7 +36,6 @@ class CommentsController extends Controller
      * @return json result of opperation
      */
     public function update(Request $request, $id)
-
     {
         //validate the request
         $this->validate($request, [
@@ -230,7 +230,7 @@ class CommentsController extends Controller
 
         $user2 = new User();
         $user2->name = 'Registered User';
-        $user2->email = 'demo@email.com';
+        $user2->email = rand(1, 200) . 'demo@email.com';
         $user2->save();
 
         $comment1 = new Comment();
@@ -247,7 +247,11 @@ class CommentsController extends Controller
         $comment2->comment_origin = 'Twitter';
         $comment2->save();
 
-        return response()->json(['job completed'], 200);
+
+        return response()->json([
+            'data_reated' => ['users' => [$user1, $user2], 'comments' => [$comment1, $comment2]],
+            'status' => 'job completed'
+        ], 200);
     }
 
     /**
@@ -255,41 +259,32 @@ class CommentsController extends Controller
      * @param array $request,
      * @return json result of opperation
      */
-    public function createComment(Request $request){
+    public function createComment(Request $request)
+    {
         //validate request
         $validate = validator([
-            'email' => 'required|email|unique',
+            'comment_owner_email' => 'required|email|unique',
             'comment_body' => 'required',
             'comment_origin' => 'required',
             'report_id' => 'required',
-            'name' => 'required'
+            'comment_owner_username' => 'required'
         ]);
-        if(!$validate){
-            return response($content = [
-                'message' => 'Invalid Request',
-                'response' => 'error',
-                ] ,
-                $status = 404
-            );
-        }
 
-        if (!isset($request->comment_body)|| !isset($request->comment_origin) 
-        || !isset($request->comment_owner_username) || !isset($request->comment_owner_email) 
-        || !isset($request->comment_origin) || !isset($request->report_id) ){
-            return response (
+        if (!$validate) {
+            return response(
                 $content = [
-                    "message" => "Invalid Request, All fields in the body are required",
-                    "response" => "error"
+                    'message' => 'all fields are Required',
+                    'response' => 'error',
                 ],
                 $status = 404
             );
         }
 
         $request = json_decode($request->getContent());
-    
+
         $check_user = User::where('email', $request->comment_owner_email)->get(); //check if user already exist
 
-        if (count($check_user) > 0){
+        if (count($check_user) > 0) {
             //create comments
 
             $user_id = $check_user[0]->id;
@@ -302,30 +297,33 @@ class CommentsController extends Controller
             $saveComment = $comment->save();
 
             if ($saveComment) {
-                return response($content = [
-                    'data' => [],
-                    'message' => 'Comment created successfully',
-                    'response' => 'Ok'
-                ],
-                $status = 201);
-            }else {
-                return response($content = [
-                    'message' => 'Cannot save comment',
-                    'response' => 'error',
-                    ] ,
+                return response(
+                    $content = [
+                        'data' => [$comment],
+                        'message' => 'Comment created successfully',
+                        'response' => 'Ok'
+                    ],
+                    $status = 201
+                );
+            } else {
+                return response(
+                    $content = [
+                        'message' => 'Cannot save comment',
+                        'response' => 'error',
+                    ],
                     $status = 400
                 );
             }
-
-            
-        }else {
+        } else {
             //create new user before creating comment
             $user = new User();
-            $save = $user->firstOrCreate(['email' => $request->comment_owner_email, 
-            'name' => $request->comment_owner_username]);
+            $save = $user->firstOrCreate([
+                'email' => $request->comment_owner_email,
+                'name' => $request->comment_owner_username
+            ]);
 
 
-            if ($save){
+            if ($save) {
                 $comment = new Comment();
                 $comment->user_id = User::all()->last()->id; //get last user id from database
                 $comment->comment_body = $request->comment_body;
@@ -334,30 +332,32 @@ class CommentsController extends Controller
                 $saveComment = $comment->save();
 
                 if ($saveComment) {
-                    return response($content = [
-                        'data' => [],
-                        'message' => 'Comment created successfully',
-                        'response' => 'Ok'
-                    ],
-                    $status = 201);
-                }else {
-                    return response($content = [
-                        'message' => 'Cannot save comment',
-                        'response' => 'error',
-                        ] ,
+                    return response(
+                        $content = [
+                            'data' => [],
+                            'message' => 'Comment created successfully',
+                            'response' => 'Ok'
+                        ],
+                        $status = 201
+                    );
+                } else {
+                    return response(
+                        $content = [
+                            'message' => 'Cannot save comment',
+                            'response' => 'error',
+                        ],
                         $status = 400
                     );
                 }
+            }
 
-            } 
-
-            return response($content = [
-                'message' =>'Error could not save user',
-                'response' => 'error',
-                ] ,
+            return response(
+                $content = [
+                    'message' => 'Error could not save user',
+                    'response' => 'error',
+                ],
                 $status = 400
             );
         }
-
     }
 }
