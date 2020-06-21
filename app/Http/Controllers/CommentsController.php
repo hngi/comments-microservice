@@ -20,6 +20,16 @@ class CommentsController extends Controller
         return response()->json($msg, 200);
     
     }
+    public function getAllComments() {
+        //get all comment here 
+        $comments = DB::table('comments')->get();
+        $msg = [
+            'data' => $comments,
+            'response' => 'success'
+        ];
+        return response()->json($msg, 200);
+    
+    }
     /**
      * Edit comment
      * @param array $request email, comment
