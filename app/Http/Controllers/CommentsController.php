@@ -257,13 +257,36 @@ class CommentsController extends Controller
      */
     public function createComment(Request $request){
         //validate request
-        validator([
+        $validate = validator([
             'email' => 'required|email|unique',
-            
+            'comment_body' => 'required',
+            'comment_origin' => 'required',
+            'report_id' => 'required',
+            'name' => 'required'
         ]);
+        if(!$validate){
+            return response($content = [
+                'message' => 'Invalid Request',
+                'response' => 'error',
+                ] ,
+                $status = 404
+            );
+        }
+
+        if (!isset($request->comment_body)|| !isset($request->comment_origin) 
+        || !isset($request->comment_owner_username) || !isset($request->comment_owner_email) 
+        || !isset($request->comment_origin) || !isset($request->report_id) ){
+            return response (
+                $content = [
+                    "message" => "Invalid Request, All fields in the body are required",
+                    "response" => "error"
+                ],
+                $status = 404
+            );
+        }
 
         $request = json_decode($request->getContent());
-        
+    
         $check_user = User::where('email', $request->comment_owner_email)->get(); //check if user already exist
 
         if (count($check_user) > 0){
@@ -298,9 +321,8 @@ class CommentsController extends Controller
         }else {
             //create new user before creating comment
             $user = new User();
-            $user->name = $request->comment_owner_username;
-            $user->email = $request->comment_owner_email;
-            $save = $user->firstOrCreate(['email' => $user->email, 'name' => $user->name]);
+            $save = $user->firstOrCreate(['email' => $request->comment_owner_email, 
+            'name' => $request->comment_owner_username]);
 
 
             if ($save){
