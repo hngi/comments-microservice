@@ -284,12 +284,12 @@ class CommentsController extends Controller
                 $status = 404
             );
         }
-        
+
         $request = json_decode($request->getContent());
-        return $request;
+    
         $check_user = User::where('email', $request->comment_owner_email)->get(); //check if user already exist
 
-        if ($check_user !== []){
+        if (count($check_user) > 0){
             //create comments
 
             $user_id = $check_user[0]->id;
