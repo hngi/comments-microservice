@@ -17,7 +17,14 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::post('/tweet/comment', ['uses' => "TwitterCommentsController@tweetComments"]);
+//create twitter comment
+Route::post('/tweet/comment/create', ['uses' => "TwitterCommentsController@tweetComments"]);
+
+//create comment
+Route::post('/report/comment/create', ['uses' => "CommentsController@createComment"]);
+
+//create reply
+Route::post('/report/comment/reply/create', ['uses' => "RepliesController@createReply"]);
 
 //edit comment
 Route::patch('reports/comment/edit/{id}', 'CommentsController@update');
@@ -28,5 +35,12 @@ Route::delete('report/comment/{comment_id}', 'CommentsController@delete');
 // upvote/downvotes
 Route::patch('/reports/comment/vote/{comment_id}', ['uses' => 'CommentsController@vote']);
 
+//upvote/downvote reply
+Route::patch('reports/comment/reply/vote/{reply_id}', ['uses' => 'RepliesController@vote']);
+
 //generate dummy users and comments
 Route::get('/dummy-data','CommentsController@generateDummyData');
+
+//Get a comments on a report
+Route::get('report/comments/{report_id}', 'CommentsController@getSingleCommentsOnReport');
+
