@@ -9,6 +9,26 @@ use Illuminate\Support\Facades\DB;
 
 class CommentsController extends Controller
 {
+
+    public function getSingleCommentsOnReport($report_id)
+    {
+        //get all comment here
+        $comments = Comment::where('report_id', $report_id)->get();
+
+        if (!$comments) {
+            return response([
+                "message" => "No Comment for Report found",
+                "response" => "error"
+            ], 404);
+        }
+        //else return success
+        return response([
+            "data" => $comments,
+            "message" => "Comment returned successfully",
+            "response" => "Ok"
+        ], 200);
+    }
+
     /**
      * Edit comment
      * @param array $request email, comment
@@ -210,7 +230,7 @@ class CommentsController extends Controller
 
         $user2 = new User();
         $user2->name = 'Registered User';
-        $user2->email = 'demo@email.com';
+        $user2->email = rand(1, 200) . 'demo@email.com';
         $user2->save();
 
         $comment1 = new Comment();
@@ -227,6 +247,127 @@ class CommentsController extends Controller
         $comment2->comment_origin = 'Twitter';
         $comment2->save();
 
-        return response()->json(['job completed'], 200);
+        $reply1 = new Reply();
+        $reply1->reply = 'This money is actually big';
+        $reply1->comment_id = $comment1->id;
+        $reply1->save();
+
+        $reply2 = new Reply();
+        $reply2->reply = 'I shall never welcome you ...';
+        $reply2->comment_id = $comment2->id;
+        $reply2->save();
+
+
+        return response()->json([
+            'data_created' => ['users' => [$user1, $user2], 'comments' => [$comment1, $comment2], 'replies' => [$reply1, $reply2]],
+            'status' => 'job completed'
+        ], 200);
+    }
+
+    /**
+     * Create comment in database
+     * @param array $request,
+     * @return json result of opperation
+     */
+    public function createComment(Request $request)
+    {
+        //validate request
+        $validate = validator([
+            'comment_owner_email' => 'required|email|unique',
+            'comment_body' => 'required',
+            'comment_origin' => 'required',
+            'report_id' => 'required',
+            'comment_owner_username' => 'required'
+        ]);
+
+        if (!$validate) {
+            return response(
+                $content = [
+                    'message' => 'all fields are Required',
+                    'response' => 'error',
+                ],
+                $status = 404
+            );
+        }
+
+        $request = json_decode($request->getContent());
+
+        $check_user = User::where('email', $request->comment_owner_email)->get(); //check if user already exist
+
+        if (count($check_user) > 0) {
+            //create comments
+
+            $user_id = $check_user[0]->id;
+
+            $comment = new Comment();
+            $comment->user_id = $user_id;
+            $comment->comment_body = $request->comment_body;
+            $comment->comment_origin = $request->comment_origin;
+            $comment->report_id = $request->report_id;
+            $saveComment = $comment->save();
+
+            if ($saveComment) {
+                return response(
+                    $content = [
+                        'data' => [$comment],
+                        'message' => 'Comment created successfully',
+                        'response' => 'Ok'
+                    ],
+                    $status = 201
+                );
+            } else {
+                return response(
+                    $content = [
+                        'message' => 'Cannot save comment',
+                        'response' => 'error',
+                    ],
+                    $status = 400
+                );
+            }
+        } else {
+            //create new user before creating comment
+            $user = new User();
+            $save = $user->firstOrCreate([
+                'email' => $request->comment_owner_email,
+                'name' => $request->comment_owner_username
+            ]);
+
+
+            if ($save) {
+                $comment = new Comment();
+                $comment->user_id = User::all()->last()->id; //get last user id from database
+                $comment->comment_body = $request->comment_body;
+                $comment->comment_origin = $request->comment_origin;
+                $comment->report_id = $request->report_id;
+                $saveComment = $comment->save();
+
+                if ($saveComment) {
+                    return response(
+                        $content = [
+                            'data' => [],
+                            'message' => 'Comment created successfully',
+                            'response' => 'Ok'
+                        ],
+                        $status = 201
+                    );
+                } else {
+                    return response(
+                        $content = [
+                            'message' => 'Cannot save comment',
+                            'response' => 'error',
+                        ],
+                        $status = 400
+                    );
+                }
+            }
+
+            return response(
+                $content = [
+                    'message' => 'Error could not save user',
+                    'response' => 'error',
+                ],
+                $status = 400
+            );
+        }
     }
 }
