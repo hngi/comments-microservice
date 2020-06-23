@@ -2,61 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Comment;
+
+use App\Reply;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RepliesController extends Controller
 {
-    public function vote(Request $request, $comment_body, $reply_id)
+    public function vote(Request $request, $reply_id)
     {
-        //validate the request
-        $this->validate($request, [
-            'email' => 'required|email',
-            'comment_body' => 'required'
-            'reply_body' => 'required'
-        ]);
-
-        //get email, comment_body and reply_body from request
-        $email = $request['email'];
-        $comment_body = $request['comment_body'];
-        $reply_body = $request['reply_body'];
-
-        //get the user id from database
-        $user = DB::table('users')->select('id')->where('email', $email)->get()->first();
-        //check if user exist
-        if (!$user) {
-            $msg = [
-                'message' => 'User not found',
-                'response' => 'error'
-            ];
-            return response()->json($msg, 404);
-        }
-
-        //get the comment body from database
-        $comment = DB::table('comments')->select('comment_body', 'user_id')->where('id', $id)->get()->first();
-        //check if comment exist
-        if (!$comment) {
-            $msg = [
-                'message' => 'Comment Not Found',
-                'response' => 'error'
-            ];
-            return response()->json($msg, 404);
-        }
-
-        //get the reply connected to a particular comment from database
-        $reply = DB::table('reply')->select('reply_body', 'user_id')->where('id', $id)->get()->first();
-        //check if reply exist
-        if (!$reply) {
-            $msg = [
-                'message' => 'Reply Not Found',
-                'response' => 'error'
-            ];
-            return response()->json($msg, 404);
-        }
-
-
         $this->validate($request, [
             'vote_type' => 'required|string'
         ], [
@@ -86,7 +41,7 @@ class RepliesController extends Controller
 
         $reply = Reply::find($reply_id);
 
-        // check if comment is found
+        // check if reply is found
         if (!$reply) {
             return response()->json([
                 'message' => 'Reply Not Found',
@@ -118,6 +73,53 @@ class RepliesController extends Controller
                 'response' => 'Ok'
             ], 200);
         }
+    }
+
+    public function createReply(Request $request)
+    {
+        //validate request. Only the comment_id is required, enabling non-users to reply
+        $validate = validator([
+            'comment_id' => 'required',
+        ]);
+
+        if (!$validate) {
+            return response(
+                $content = [
+                    'message' => 'comment_id is Required',
+                    'response' => 'error',
+                ],
+                $status = 404
+            );
+        }
+
+        $request = json_decode($request->getContent());
+
+        //create replies;
+
+        $reply = new Reply();
+        $reply->comment_id = $comment_id;
+        $saveReply = $reply->save();
+
+        if ($saveReply) {
+            return response(
+                $content = [
+                    'data' => [$reply],
+                    'message' => 'Reply created successfully',
+                    'response' => 'Ok'
+                ],
+                $status = 201
+            );
+        } else {
+            return response(
+                $content = [
+                    'message' => 'Cannot save reply',
+                    'response' => 'error',
+                ],
+                $status = 400
+            );
+        
+        } 
+            
     }
 }
 
