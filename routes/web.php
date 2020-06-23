@@ -23,6 +23,9 @@ Route::post('/tweet/comment/create', ['uses' => "TwitterCommentsController@tweet
 //create comment
 Route::post('/report/comment/create', ['uses' => "CommentsController@createComment"]);
 
+//create reply
+Route::post('/report/comment/reply/create', ['uses' => "RepliesController@createReply"]);
+
 //edit comment
 Route::patch('reports/comment/edit/{id}', 'CommentsController@update');
 

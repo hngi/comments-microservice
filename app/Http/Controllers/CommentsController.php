@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\User;
+use App\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -246,10 +247,20 @@ class CommentsController extends Controller
         $comment2->comment_body = 'This is a welcome development ...';
         $comment2->comment_origin = 'Twitter';
         $comment2->save();
+        
+        $reply1 = new Reply();
+        $reply1->reply = 'This money is actually big';
+        $reply1->comment_id = $comment1->id;
+        $reply1->save();
+
+        $reply2 = new Reply();
+        $reply2->reply = 'I shall never welcome you ...';
+        $reply2->comment_id = $comment2->id;
+        $reply2->save();
 
 
         return response()->json([
-            'data_reated' => ['users' => [$user1, $user2], 'comments' => [$comment1, $comment2]],
+            'data_created' => ['users' => [$user1, $user2], 'comments' => [$comment1, $comment2], 'replies' => [$reply1, $reply2]],
             'status' => 'job completed'
         ], 200);
     }
@@ -268,8 +279,7 @@ class CommentsController extends Controller
             'comment_origin' => 'required',
             'report_id' => 'required',
             'comment_owner_username' => 'required'
-        ]);
-
+          
         if (!$validate) {
             return response(
                 $content = [

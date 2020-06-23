@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Comment;
 use App\Reply;
 use App\User;
 use Illuminate\Http\Request;
@@ -12,27 +12,6 @@ class RepliesController extends Controller
 {
     public function vote(Request $request, $reply_id)
     {
-        //validate the request
-        $this->validate($request, [
-            'vote_type' => 'required',
-        ]); //only vote type and email is required
-
-        //get vote_type from request
-        //anybody can upvote or downvote
-        $voteType = $request['vote_type'];
-
-        //get the reply connected to a particular comment from database
-        $reply = DB::table('reply')->select('reply_body', 'user_id')->where('id', $reply_id)->get()->first();
-        //check if reply exist
-        if (!$reply) {
-            $msg = [
-                'message' => 'Reply Not Found',
-                'response' => 'error'
-            ];
-            return response()->json($msg, 404);
-        }
-
-
         $this->validate($request, [
             'vote_type' => 'required|string'
         ], [
@@ -62,7 +41,7 @@ class RepliesController extends Controller
         
         $reply = Reply::find($reply_id);
 
-        // check if comment is found
+        // check if reply is found
         if (!$reply) {
             return response()->json([
                 'message' => 'Reply Not Found',
@@ -94,6 +73,54 @@ class RepliesController extends Controller
                 'response' => 'Ok'
             ], 200);
         }
+    }
+
+    public function createReply(Request $request)
+    {
+        //validate request
+        $validate = validator([
+            'comment_id' => 'required',
+            'reply' => 'required'
+        ]);
+
+        if (!$validate) {
+            return response(
+                $content = [
+                    'message' => 'comment_id is Required',
+                    'response' => 'error',
+                ],
+                $status = 404
+            );
+        }
+
+        $request = json_decode($request->getContent());
+
+        //create replies;
+        $reply = new Reply();
+        $reply->reply = $request->reply;
+        $reply->comment_id = $request->comment_id;
+        $saveReply = $reply->save();
+
+        if ($saveReply) {
+            return response(
+                $content = [
+                    'data' => [$reply],
+                    'message' => 'Reply created successfully',
+                    'response' => 'Ok'
+                ],
+                $status = 201
+            );
+        } else {
+            return response(
+                $content = [
+                    'message' => 'Cannot save reply',
+                    'response' => 'error',
+                ],
+                $status = 400
+            );
+        
+        } 
+            
     }
 }
 
