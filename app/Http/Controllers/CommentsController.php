@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\User;
+use App\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -246,7 +247,7 @@ class CommentsController extends Controller
         $comment2->comment_body = 'This is a welcome development ...';
         $comment2->comment_origin = 'Twitter';
         $comment2->save();
-
+        
         $reply1 = new Reply();
         $reply1->reply = 'This money is actually big';
         $reply1->comment_id = $comment1->id;

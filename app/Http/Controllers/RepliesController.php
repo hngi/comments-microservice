@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Comment;
 use App\Reply;
 use App\User;
 use Illuminate\Http\Request;
@@ -77,9 +77,10 @@ class RepliesController extends Controller
 
     public function createReply(Request $request)
     {
-        //validate request. Only the comment_id is required, enabling non-users to reply
+        //validate request
         $validate = validator([
             'comment_id' => 'required',
+            'reply' => 'required'
         ]);
 
         if (!$validate) {
@@ -95,9 +96,9 @@ class RepliesController extends Controller
         $request = json_decode($request->getContent());
 
         //create replies;
-
         $reply = new Reply();
-        $reply->comment_id = $comment_id;
+        $reply->reply = $request->reply;
+        $reply->comment_id = $request->comment_id;
         $saveReply = $reply->save();
 
         if ($saveReply) {
