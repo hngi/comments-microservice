@@ -38,7 +38,7 @@ class RepliesController extends Controller
                 'response' => 'error',
             ], 400);
         }
-
+        
         $reply = Reply::find($reply_id);
 
         // check if reply is found
