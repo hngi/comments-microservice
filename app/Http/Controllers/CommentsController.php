@@ -279,6 +279,7 @@ class CommentsController extends Controller
             'comment_origin' => 'required',
             'report_id' => 'required',
             'comment_owner_username' => 'required'
+        ]);
           
         if (!$validate) {
             return response(
